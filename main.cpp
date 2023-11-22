@@ -21,7 +21,7 @@ int main()
         DrawTextEx(fonts[0] , "Yay", (Vector2){100, 100} , fonts[0].baseSize, 0, BLACK);
         EndDrawing();
     }
-
+    ////DrawText(TextFormat("Yay %d %d", count, petitCompteurdeLignes), 100 - MeasureText("Yay", 30), 100 - MeasureText("Yay", 30), 30, WHITE);
 
     return 0;
 }
