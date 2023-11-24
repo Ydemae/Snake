@@ -95,7 +95,7 @@ void unloadGame();
 Vector4 normalizeColor(int r, int g, int b);
 
 static Snake snake[MAXSNAKELENGTH] = {};
-static int followerBuffer[MAXSNAKELENGTH] = {-1};
+static Vector2 followerBuffer[MAXSNAKELENGTH] = {(Vector2){-1,-1}};
 static Fruit fruit;
 static bool gameOver = false;
 static bool gamePaused = false;
@@ -161,7 +161,8 @@ void updateGame(int screenHeight, int screenWidth){
         int gridWidth = Ediv(screenWidth, SQUARESIZE);
         bool canMove = false;
         if (next != -1){
-            followerBuffer[1] = next;
+            followerBuffer[1].x = next;
+            followerBuffer[1].y = 1;
             next = -1;
         }
         if (IsKeyPressed(KEY_P) || IsKeyPressed(KEY_SPACE)){
@@ -266,8 +267,12 @@ void updateGame(int screenHeight, int screenWidth){
         for(int i = 0; i < ACTUALSIZE; i++){
             if (i != 0 && ACTUALSIZE > 1){//FollowerBehavior
                 bool followerCanMove = false;
-                if (followerBuffer[i] != -1){
-                     if (followerBuffer[i] == 0){
+                if (followerBuffer[i].x != -1){
+                    if (followerBuffer[i].y == 0){
+                        followerBuffer[i].y = 1;
+                    }
+                    else{
+                        if (followerBuffer[i].x == 0){
                         if (snake[i].getSpeed().x == 0){
                         for (int j = 0; j < gridHeight; j++){
                             if (snake[i].getPosition().y == j*SQUARESIZE){
@@ -278,13 +283,15 @@ void updateGame(int screenHeight, int screenWidth){
                             snake[i].setSpeed((Vector2){Ediv(SQUARESIZE,10), 0});
                             followerCanMove = false;
                             if (i != ACTUALSIZE-1){
-                                followerBuffer[i+1] = followerBuffer[i];
+                                followerBuffer[i+1].x = followerBuffer[i].x;
+                                followerBuffer[i+1].y = 0;
                             }
-                            followerBuffer[i] = -1;
+                            followerBuffer[i].x = -1;
+                            followerBuffer[i].y = 0;
                             }
                         }
                     }
-                    else if (followerBuffer[i] == 1){
+                    else if (followerBuffer[i].x == 1){
                         if (snake[i].getSpeed().x == 0){
                         for (int j = 0; j < gridHeight; j++){
                             if (snake[i].getPosition().y == j*SQUARESIZE){
@@ -295,13 +302,15 @@ void updateGame(int screenHeight, int screenWidth){
                             snake[i].setSpeed((Vector2){-Ediv(SQUARESIZE,10), 0});
                             followerCanMove = false;
                             if (i != ACTUALSIZE-1){
-                                followerBuffer[i+1] = followerBuffer[i];
+                                followerBuffer[i+1].x = followerBuffer[i].x;
+                                followerBuffer[i+1].y = 0;
                             }
-                            followerBuffer[i] = -1;
+                            followerBuffer[i].x = -1;
+                            followerBuffer[i].y = 0;
                             }
                         }
                     }
-                    else if (followerBuffer[i] == 2){
+                    else if (followerBuffer[i].x == 2){
                         if (snake[i].getSpeed().y == 0){
                         for (int j = 0; j < gridWidth; j++){
                             if (snake[i].getPosition().x == j*SQUARESIZE){
@@ -312,13 +321,15 @@ void updateGame(int screenHeight, int screenWidth){
                             snake[i].setSpeed((Vector2){0, -Ediv(SQUARESIZE,10)});
                             followerCanMove = false;
                             if (i != ACTUALSIZE-1){
-                                followerBuffer[i+1] = followerBuffer[i];
+                                followerBuffer[i+1].x = followerBuffer[i].x;
+                                followerBuffer[i+1].y = 0;
                             }
-                            followerBuffer[i] = -1;
+                            followerBuffer[i].x = -1;
+                            followerBuffer[i].y = 0;
                             }
                         }
                     }
-                    else if (followerBuffer[i] == 3){
+                    else if (followerBuffer[i].x == 3){
                         if (snake[i].getSpeed().y == 0){
                         for (int j = 0; j < gridWidth; j++){
                             if (snake[i].getPosition().x == j*SQUARESIZE){
@@ -328,12 +339,15 @@ void updateGame(int screenHeight, int screenWidth){
                         if (followerCanMove){
                             snake[i].setSpeed((Vector2){0, Ediv(SQUARESIZE,10)});
                             if (i != ACTUALSIZE-1){
-                                followerBuffer[i+1] = followerBuffer[i];
+                                followerBuffer[i+1].x = followerBuffer[i].x;
+                                followerBuffer[i+1].y = 0;
                             }
-                            followerBuffer[i] = -1;
+                            followerBuffer[i].x = -1;
+                            followerBuffer[i].y = 0;
                             followerCanMove = false;
                             }
                         }
+                    }
                     }
                 }
             }
