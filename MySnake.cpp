@@ -95,7 +95,7 @@ void unloadGame();
 Vector4 normalizeColor(int r, int g, int b);
 
 static Snake snake[MAXSNAKELENGTH] = {};
-static Vector2 followerBuffer[MAXSNAKELENGTH] = {};
+static Vector3 followerBuffer[MAXSNAKELENGTH] = {};
 static Fruit fruit;
 static bool gameOver = false;
 static bool gamePaused = false;
@@ -145,7 +145,7 @@ void initGame(int screenHeight, int screenWidth){
     snake[0] = Snake((Vector2){0+SQUARESIZE*2,0+SQUARESIZE*2}, (Vector2){SQUARESIZE-1, SQUARESIZE-1}, (Vector2){0,0}, (Color)RED);
     snake[0].setSpeed((Vector2){Ediv(SQUARESIZE,10), 0});
     for(int i = 0; i < MAXSNAKELENGTH; i++){
-        followerBuffer[i] = (Vector2){-1,-1};
+        followerBuffer[i] = (Vector3){-1,-1,-1};
     }
 
     fruit = Fruit((Vector2){RandomNumber(2, Ediv(screenWidth, SQUARESIZE) - 2)*SQUARESIZE,RandomNumber(2, Ediv(screenHeight, SQUARESIZE)-2)*SQUARESIZE},(Vector2){SQUARESIZE-1, SQUARESIZE-1}, (Color)ColorFromNormalized((Vector4){0.11, 1,1,1}));
@@ -269,6 +269,11 @@ void updateGame(int screenHeight, int screenWidth){
         for(int i = 0; i < ACTUALSIZE; i++){
             if (i != 0 && ACTUALSIZE > 1){//FollowerBehavior
                 bool followerCanMove = false;
+                if (followerBuffer[i].x == -1 && followerBuffer[i].z != -1){
+                    followerBuffer[i].x = followerBuffer[i].z;
+                    followerBuffer[i].z = -1;
+                    followerBuffer[i].y = 0;
+                }
                 if (followerBuffer[i].x != -1){
                     if (followerBuffer[i].y == 0){
                         followerBuffer[i].y = 1;
@@ -285,8 +290,12 @@ void updateGame(int screenHeight, int screenWidth){
                             snake[i].setSpeed((Vector2){Ediv(SQUARESIZE,10), 0});
                             followerCanMove = false;
                             if (i != ACTUALSIZE-1){
-                                followerBuffer[i+1].x = followerBuffer[i].x;
-                                followerBuffer[i+1].y = 0;
+                                if (followerBuffer[i+1].x == -1){
+                                    followerBuffer[i+1].x = followerBuffer[i].x;
+                                    followerBuffer[i+1].y = 0;
+                                }else{
+                                    followerBuffer[i+1].z = followerBuffer[i].x;
+                                }
                             }
                             followerBuffer[i].x = -1;
                             followerBuffer[i].y = 0;
@@ -304,8 +313,12 @@ void updateGame(int screenHeight, int screenWidth){
                             snake[i].setSpeed((Vector2){-Ediv(SQUARESIZE,10), 0});
                             followerCanMove = false;
                             if (i != ACTUALSIZE-1){
-                                followerBuffer[i+1].x = followerBuffer[i].x;
-                                followerBuffer[i+1].y = 0;
+                                if (followerBuffer[i+1].x == -1){
+                                    followerBuffer[i+1].x = followerBuffer[i].x;
+                                    followerBuffer[i+1].y = 0;
+                                }else{
+                                    followerBuffer[i+1].z = followerBuffer[i].x;
+                                }
                             }
                             followerBuffer[i].x = -1;
                             followerBuffer[i].y = 0;
@@ -323,8 +336,12 @@ void updateGame(int screenHeight, int screenWidth){
                             snake[i].setSpeed((Vector2){0, -Ediv(SQUARESIZE,10)});
                             followerCanMove = false;
                             if (i != ACTUALSIZE-1){
-                                followerBuffer[i+1].x = followerBuffer[i].x;
-                                followerBuffer[i+1].y = 0;
+                                if (followerBuffer[i+1].x == -1){
+                                    followerBuffer[i+1].x = followerBuffer[i].x;
+                                    followerBuffer[i+1].y = 0;
+                                }else{
+                                    followerBuffer[i+1].z = followerBuffer[i].x;
+                                }
                             }
                             followerBuffer[i].x = -1;
                             followerBuffer[i].y = 0;
@@ -341,8 +358,12 @@ void updateGame(int screenHeight, int screenWidth){
                         if (followerCanMove){
                             snake[i].setSpeed((Vector2){0, Ediv(SQUARESIZE,10)});
                             if (i != ACTUALSIZE-1){
-                                followerBuffer[i+1].x = followerBuffer[i].x;
-                                followerBuffer[i+1].y = 0;
+                                if (followerBuffer[i+1].x == -1){
+                                    followerBuffer[i+1].x = followerBuffer[i].x;
+                                    followerBuffer[i+1].y = 0;
+                                }else{
+                                    followerBuffer[i+1].z = followerBuffer[i].x;
+                                }
                             }
                             followerBuffer[i].x = -1;
                             followerBuffer[i].y = 0;
