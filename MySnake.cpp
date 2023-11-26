@@ -95,7 +95,7 @@ void unloadGame();
 Vector4 normalizeColor(int r, int g, int b);
 
 static Snake snake[MAXSNAKELENGTH] = {};
-static Vector2 followerBuffer[MAXSNAKELENGTH] = {(Vector2){-1,-1}};
+static Vector2 followerBuffer[MAXSNAKELENGTH] = {};
 static Fruit fruit;
 static bool gameOver = false;
 static bool gamePaused = false;
@@ -144,7 +144,9 @@ void initGame(int screenHeight, int screenWidth){
     ACTUALSIZE = 1;
     snake[0] = Snake((Vector2){0+SQUARESIZE*2,0+SQUARESIZE*2}, (Vector2){SQUARESIZE-1, SQUARESIZE-1}, (Vector2){0,0}, (Color)RED);
     snake[0].setSpeed((Vector2){Ediv(SQUARESIZE,10), 0});
-
+    for(int i = 0; i < MAXSNAKELENGTH; i++){
+        followerBuffer[i] = (Vector2){-1,-1};
+    }
 
     fruit = Fruit((Vector2){RandomNumber(2, Ediv(screenWidth, SQUARESIZE) - 2)*SQUARESIZE,RandomNumber(2, Ediv(screenHeight, SQUARESIZE)-2)*SQUARESIZE},(Vector2){SQUARESIZE-1, SQUARESIZE-1}, (Color)ColorFromNormalized((Vector4){0.11, 1,1,1}));
 }
@@ -250,7 +252,7 @@ void updateGame(int screenHeight, int screenWidth){
                     ACTUALSIZE++;
                     Snake oldSnake = snake[ACTUALSIZE-2];
                     if (oldSnake.getSpeed().x > 0){
-                        snake[ACTUALSIZE-1] = Snake((Vector2){oldSnake.getPosition().x - SQUARESIZE, oldSnake.getPosition().y}, oldSnake.getSize(), oldSnake.getSpeed(), (Color)BLUE);
+                        snake[ACTUALSIZE-1] = Snake((Vector2){oldSnake.getPosition().x - SQUARESIZE, oldSnake.getPosition().y}, oldSnake.getSize(), oldSnake.getSpeed(), BLUE);
                     }
                     else if (oldSnake.getSpeed().x < 0){
                         snake[ACTUALSIZE-1] = Snake((Vector2){oldSnake.getPosition().x + SQUARESIZE, oldSnake.getPosition().y}, oldSnake.getSize(), oldSnake.getSpeed(), BLUE);
