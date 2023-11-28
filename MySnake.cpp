@@ -376,25 +376,22 @@ void updateGame(int screenHeight, int screenWidth){
                 if (i > 1){
                     //Collisions avec les followers
                     if (snake[0].getSpeed().x < 0){
-                        if (snake[i].getPosition().x - snake[0].getPosition().x == 0 && snake[0].getPosition().y - snake[i].getPosition().y == 0){
+                        if (snake[i].getPosition().x - snake[0].getPosition().x + SQUARESIZE == 0 && snake[i].getPosition().y - snake[0].getPosition().y < SQUARESIZE){
                             gameOver = true;
                         }
                     }
                     else if (snake[0].getSpeed().x > 0){
-                        if (snake[0].getPosition().x + SQUARESIZE == snake[i].getPosition().x && snake[0].getPosition().y == snake[i].getPosition().y){
-                            std::cout << "Je sais pas pourquoi je teste ça ";
+                        if (snake[0].getPosition().x - snake[i].getPosition().x + SQUARESIZE == 0 && snake[i].getPosition().y - snake[0].getPosition().y < SQUARESIZE){
                             gameOver = true;
                         }
                     }
                     else if (snake[0].getSpeed().y < 0){
-                        if (snake[0].getPosition().x == snake[i].getPosition().x && snake[0].getPosition().y - SQUARESIZE == snake[i].getPosition().y){
-                            std::cout << "Je sais pas pourquoi je teste ça ";
+                        if (snake[i].getPosition().x - snake[0].getPosition().x < SQUARESIZE && snake[0].getPosition().y - SQUARESIZE == snake[i].getPosition().y){
                             gameOver = true;
                         }
                     }
                     else if (snake[0].getSpeed().y > 0){
-                        if (snake[0].getPosition().x == snake[i].getPosition().x && snake[0].getPosition().y + SQUARESIZE == snake[i].getPosition().y){
-                            std::cout << "Je sais pas pourquoi je teste ça ";
+                        if (snake[i].getPosition().x - snake[0].getPosition().x < SQUARESIZE && snake[0].getPosition().y + SQUARESIZE == snake[i].getPosition().y){
                             gameOver = true;
                         }
                     }
@@ -422,7 +419,6 @@ void updateGame(int screenHeight, int screenWidth){
 void drawGame(int screenHeight, int screenWidth){
     int GridHeight = Ediv(screenHeight, SQUARESIZE) - 1;
     int GridWidth = Ediv(screenWidth, SQUARESIZE) - 1;
-    DrawText(TextFormat("Yay %f", snake[2].getPosition().x - snake[0].getPosition().x), 100 - MeasureText("Yay", 30), 600 - MeasureText("Yay", 30), 30, WHITE);
     Vector2 offset;
     offset.x = SQUARESIZE * 2;
     offset.y = SQUARESIZE * 2;
