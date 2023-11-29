@@ -147,8 +147,30 @@ void initGame(int screenHeight, int screenWidth){
     for(int i = 0; i < MAXSNAKELENGTH; i++){
         followerBuffer[i] = (Vector3){-1,-1,-1};
     }
+    Vector2 fruitPosition = (Vector2){RandomNumber(2, Ediv(screenWidth, SQUARESIZE) - 2)*SQUARESIZE,RandomNumber(2, Ediv(screenHeight, SQUARESIZE)-2)*SQUARESIZE};
+    while (fruitPosition.x == snake[0].getPosition().x && fruitPosition.y == snake[0].getPosition().y){
+        fruitPosition = (Vector2){RandomNumber(2, Ediv(screenWidth, SQUARESIZE) - 2)*SQUARESIZE,RandomNumber(2, Ediv(screenHeight, SQUARESIZE)-2)*SQUARESIZE};
+    }
+    fruit = Fruit(fruitPosition,(Vector2){SQUARESIZE-1, SQUARESIZE-1}, (Color)ColorFromNormalized((Vector4){0.11, 1,1,1}));
 
-    fruit = Fruit((Vector2){RandomNumber(2, Ediv(screenWidth, SQUARESIZE) - 2)*SQUARESIZE,RandomNumber(2, Ediv(screenHeight, SQUARESIZE)-2)*SQUARESIZE},(Vector2){SQUARESIZE-1, SQUARESIZE-1}, (Color)ColorFromNormalized((Vector4){0.11, 1,1,1}));
+    //A retirer
+    for (int i = 0; i < 13; i++){
+        ACTUALSIZE++;
+        Snake oldSnake = snake[ACTUALSIZE-2];
+        if (oldSnake.getSpeed().x > 0){
+            snake[ACTUALSIZE-1] = Snake((Vector2){oldSnake.getPosition().x - SQUARESIZE, oldSnake.getPosition().y}, oldSnake.getSize(), oldSnake.getSpeed(), BLUE);
+            }
+        else if (oldSnake.getSpeed().x < 0){
+                snake[ACTUALSIZE-1] = Snake((Vector2){oldSnake.getPosition().x + SQUARESIZE, oldSnake.getPosition().y}, oldSnake.getSize(), oldSnake.getSpeed(), BLUE);
+            }
+        else if (oldSnake.getSpeed().y > 0){
+            snake[ACTUALSIZE-1] = Snake((Vector2){oldSnake.getPosition().x, oldSnake.getPosition().y - SQUARESIZE}, oldSnake.getSize(), oldSnake.getSpeed(), BLUE);
+            }
+        else if (oldSnake.getSpeed().y < 0){
+            snake[ACTUALSIZE-1] = Snake((Vector2){oldSnake.getPosition().x, oldSnake.getPosition().y + SQUARESIZE}, oldSnake.getSize(), oldSnake.getSpeed(), BLUE); 
+        }
+    }
+    
 }
 
 int update(int screenHeight, int screenWidth){
@@ -247,8 +269,18 @@ void updateGame(int screenHeight, int screenWidth){
         if (snake[0].getPosition().x + SQUARESIZE > screenWidth - SQUARESIZE*2 || snake[0].getPosition().x < 0 + SQUARESIZE *2 || snake[0].getPosition().y + SQUARESIZE > screenHeight - SQUARESIZE*2 || snake[0].getPosition().y < 0 + SQUARESIZE*2) gameOver = true;
                 if ((snake[0].getPosition().x == fruit.getPosition().x && snake[0].getPosition().y == fruit.getPosition().y) || (snake[0].getPosition().x+SQUARESIZE == fruit.getPosition().x && snake[0].getPosition().y == fruit.getPosition().y && snake[0].getSpeed().x > 0) || (snake[0].getPosition().x-SQUARESIZE == fruit.getPosition().x && snake[0].getPosition().y == fruit.getPosition().y && snake[0].getSpeed().x < 0) || (snake[0].getPosition().x == fruit.getPosition().x && snake[0].getPosition().y+SQUARESIZE == fruit.getPosition().y && snake[0].getSpeed().y > 0) || (snake[0].getPosition().x == fruit.getPosition().x && snake[0].getPosition().y-SQUARESIZE == fruit.getPosition().y && snake[0].getSpeed().y < 0)){
 
-
-                    fruit.setPosition((Vector2){RandomNumber(2, Ediv(screenWidth, SQUARESIZE) - 2)*SQUARESIZE,RandomNumber(2, Ediv(screenHeight, SQUARESIZE)-2)*SQUARESIZE});
+                    Vector2 fruitposition = (Vector2){RandomNumber(2, Ediv(screenWidth, SQUARESIZE) - 2)*SQUARESIZE,RandomNumber(2, Ediv(screenHeight, SQUARESIZE)-2)*SQUARESIZE};
+                    bool canSpawnFruit = true;
+                    do{
+                        fruitposition = (Vector2){RandomNumber(2, Ediv(screenWidth, SQUARESIZE) - 2)*SQUARESIZE,RandomNumber(2, Ediv(screenHeight, SQUARESIZE)-2)*SQUARESIZE};
+                        for (int i = 0; i < ACTUALSIZE; i++){
+                            if (snake[i].getPosition().x == fruitposition.x && snake[i].getPosition().y == fruitposition.y){
+                                canSpawnFruit = false;
+                                std::cout << "La position du fruit a dû être modifiée";
+                            }
+                        }
+                    }while(canSpawnFruit == false);
+                    fruit.setPosition(fruitposition);
                     ACTUALSIZE++;
                     Snake oldSnake = snake[ACTUALSIZE-2];
                     if (oldSnake.getSpeed().x > 0){
@@ -375,23 +407,16 @@ void updateGame(int screenHeight, int screenWidth){
                 }
                 if (i > 1){
                     //Collisions avec les followers
-                    if (snake[0].getSpeed().x < 0){
-                        if (snake[i].getPosition().x - snake[0].getPosition().x + SQUARESIZE == 0 && snake[i].getPosition().y - snake[0].getPosition().y < SQUARESIZE){
-                            gameOver = true;
-                        }
+                    if (snake[0].getPosition().x - snake[i].getPosition().x < SQUARESIZE && snake[0].getPosition().x - snake[i].getPosition().x >= 0 && snake[0].getPosition().y - snake[i].getPosition().y < SQUARESIZE && snake[0].getPosition().y - snake[i].getPosition().y >= 0){
+                        gameOver = true;
                     }
-                    else if (snake[0].getSpeed().x > 0){
-                        if (snake[0].getPosition().x - snake[i].getPosition().x + SQUARESIZE == 0 && snake[i].getPosition().y - snake[0].getPosition().y < SQUARESIZE){
-                            gameOver = true;
-                        }
-                    }
-                    else if (snake[0].getSpeed().y < 0){
-                        if (snake[i].getPosition().x - snake[0].getPosition().x < SQUARESIZE && snake[0].getPosition().y - SQUARESIZE == snake[i].getPosition().y){
+                    if (snake[0].getSpeed().x > 0){
+                        if (snake[0].getPosition().x - snake[i].getPosition().x + SQUARESIZE - 10 < 0 && snake[0].getPosition().x - snake[i].getPosition().x + SQUARESIZE - 10 > -10 && snake[i].getPosition().y - snake[0].getPosition().y < SQUARESIZE && snake[i].getPosition().y - snake[0].getPosition().y > 0){
                             gameOver = true;
                         }
                     }
                     else if (snake[0].getSpeed().y > 0){
-                        if (snake[i].getPosition().x - snake[0].getPosition().x < SQUARESIZE && snake[0].getPosition().y + SQUARESIZE == snake[i].getPosition().y){
+                        if (snake[i].getPosition().x - snake[0].getPosition().x < SQUARESIZE && snake[i].getPosition().x - snake[0].getPosition().x > 0 && snake[i].getPosition().y - snake[0].getPosition().y - SQUARESIZE + 10 < 0 && snake[i].getPosition().y - SQUARESIZE - snake[0].getPosition().y + 10 > -10 ){
                             gameOver = true;
                         }
                     }
