@@ -103,6 +103,7 @@ static int InputBuffer = -1;
 static int ACTUALSIZE = 1;
 static Font fonts[10] = {};
 static int next = -1;
+static bool gameWin = false;
 
 int main(){
     InitWindow(0, 0, "Game");
@@ -180,7 +181,7 @@ int update(int screenHeight, int screenWidth){
 }
 
 void updateGame(int screenHeight, int screenWidth){
-    if (!gameOver && !gamePaused){
+    if (!gameOver && !gamePaused && !gameWin){
         int gridHeight = Ediv(screenHeight, SQUARESIZE);
         int gridWidth = Ediv(screenWidth, SQUARESIZE);
         bool canMove = false;
@@ -282,6 +283,9 @@ void updateGame(int screenHeight, int screenWidth){
                     }while(canSpawnFruit == false);
                     fruit.setPosition(fruitposition);
                     ACTUALSIZE++;
+                    if (ACTUALSIZE >= MAXSNAKELENGTH){
+                        gameWin = true;
+                    }
                     Snake oldSnake = snake[ACTUALSIZE-2];
                     if (oldSnake.getSpeed().x > 0){
                         snake[ACTUALSIZE-1] = Snake((Vector2){oldSnake.getPosition().x - SQUARESIZE, oldSnake.getPosition().y}, oldSnake.getSize(), oldSnake.getSpeed(), BLUE);
@@ -433,10 +437,11 @@ void updateGame(int screenHeight, int screenWidth){
             gamePaused = false;
         }
     }
-    else if (gameOver){
+    else if (gameOver || gameWin){
         if (IsKeyPressed(KEY_E)){
             initGame(screenHeight, screenWidth);
             gameOver = false;
+            gameWin = false;
         }
     }
 }
@@ -473,6 +478,18 @@ void drawGame(int screenHeight, int screenWidth){
         DrawTextEx(fonts[0], "Game Over", textPlacement, 80, 5, WHITE);
         textPlacement = (Vector2){screenWidth/2 - MeasureTextEx(fonts[0], "Press [ E ] to play again", 40, 5).x, screenHeight/2 + MeasureTextEx(fonts[0], "Press [ E ] to play again", 80, 5).y};
         DrawTextEx(fonts[0], "Press [ E ] to play again", textPlacement, 80, 5, WHITE);
+    }
+    if (gameWin){
+        DrawRectangleV((Vector2){0,0}, (Vector2){screenWidth, screenHeight}, ColorFromNormalized((Vector4){0,0,0,0.5}));
+        Vector2 textPlacement = (Vector2){screenWidth/2 - MeasureTextEx(fonts[0], "Game Won", 40, 5).x, screenHeight/2 - MeasureTextEx(fonts[0], "Game Over", 80, 5).y - screenHeight/8};
+        DrawTextEx(fonts[0], "Game Won", textPlacement, 80, 5, WHITE);
+        textPlacement = (Vector2){screenWidth/2 - MeasureTextEx(fonts[0], "Press [ E ] to play again", 40, 5).x, screenHeight/2 + MeasureTextEx(fonts[0], "Press [ E ] to play again", 80, 5).y - screenHeight/8};
+        DrawTextEx(fonts[0], "Press [ E ] to play again", textPlacement, 80, 5, WHITE);
+        textPlacement = (Vector2){screenWidth/2 - MeasureTextEx(fonts[0], "T'as vraiment joué à snake jusqu'à finir ce snake ?", 40, 5).x, screenHeight/2 + MeasureTextEx(fonts[0], "T'as vraiment joué à snake jusqu'à finir ce snake ?", 80, 5).y};
+        DrawTextEx(fonts[0], "T'as vraiment joué à snake jusqu'à finir ce snake ?", textPlacement, 80, 5, WHITE);
+        textPlacement = (Vector2){screenWidth/2 - MeasureTextEx(fonts[0], "Mais t'es un malade toi ! Vas toucher de l'herbe !", 40, 5).x, screenHeight/2 + MeasureTextEx(fonts[0], "Mais t'es un malade toi ! Vas toucher de l'herbe !", 80, 5).y + screenHeight/8};
+        DrawTextEx(fonts[0], "Mais t'es un malade toi ! Vas toucher de l'herbe !", textPlacement, 80, 5, WHITE);
+        //Mais t'es un malade toi ! Vas toucher de l'herbe !
     }
     DrawTextEx(fonts[0], "Press [ ESC ] to quit", (Vector2){screenWidth - 2*SQUARESIZE - MeasureText("Press [ ESC ] to quit", 35), 0 + SQUARESIZE}, 35, 5, WHITE);
     EndDrawing();
