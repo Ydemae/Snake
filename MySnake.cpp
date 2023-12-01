@@ -5,7 +5,7 @@
 #include "include/raylib.h"
 
 //Définition des constantes statiques
-static const int MAXSNAKELENGTH = 15;
+static const int MAXSNAKELENGTH = 500;
 static const int SQUARESIZE = 40;
 
 class Snake{
@@ -103,6 +103,7 @@ static int InputBuffer = -1;
 static int ACTUALSIZE = 1;
 static int next = -1;
 static bool gameWin = false;
+static int goalToWin = 0;
 static int fontSize = 0;
 
 int main(){
@@ -114,6 +115,8 @@ int main(){
     int screenWidth = GetScreenWidth();
 
     fontSize = screenWidth / 100;
+
+    goalToWin = Ediv(screenWidth, SQUARESIZE) * Ediv(screenHeight, SQUARESIZE) / 10;
 
     initGame(screenHeight, screenWidth);
     SetTargetFPS(60);
@@ -155,7 +158,7 @@ void initGame(int screenHeight, int screenWidth){
     fruit = Fruit(fruitPosition,(Vector2){SQUARESIZE-1, SQUARESIZE-1}, (Color)ColorFromNormalized((Vector4){0.11, 1,1,1}));
 
     //A retirer
-    for (int i = 0; i < 13; i++){
+    for (int i = 0; i < 120; i++){
         ACTUALSIZE++;
         Snake oldSnake = snake[ACTUALSIZE-2];
         if (oldSnake.getSpeed().x > 0){
@@ -283,7 +286,7 @@ void updateGame(int screenHeight, int screenWidth){
                     }while(canSpawnFruit == false);
                     fruit.setPosition(fruitposition);
                     ACTUALSIZE++;
-                    if (ACTUALSIZE >= MAXSNAKELENGTH){
+                    if (ACTUALSIZE >= goalToWin){
                         gameWin = true;
                     }
                     Snake oldSnake = snake[ACTUALSIZE-2];
@@ -487,8 +490,8 @@ void drawGame(int screenHeight, int screenWidth){
         DrawText("Game Won", textPlacement.x, textPlacement.y, fontSize*4, WHITE);
         textPlacement = (Vector2){screenWidth/2 - MeasureText("Press [ E ] to play again", fontSize), screenHeight/2 - screenHeight/50};
         DrawText("Press [ E ] to play again", textPlacement.x, textPlacement.y, fontSize*2, WHITE);
-        textPlacement = (Vector2){screenWidth/2 - MeasureText("T'as vraiment joué à snake jusqu'à finir ce snake ?", fontSize), screenHeight/2 + screenHeight/25};
-        DrawText("T'as vraiment joué à snake jusqu'à finir ce snake ?", textPlacement.x, textPlacement.y, fontSize*2, WHITE);
+        textPlacement = (Vector2){screenWidth/2 - MeasureText(TextFormat("T'as vraiment joué à snake jusqu'à avoir un score de %d ?", ACTUALSIZE), fontSize), screenHeight/2 + screenHeight/25};
+        DrawText(TextFormat("T'as vraiment joué à snake jusqu'à avoir un score de %d ?", ACTUALSIZE), textPlacement.x, textPlacement.y, fontSize*2, WHITE);
         textPlacement = (Vector2){screenWidth/2 - MeasureText("Mais t'es un malade toi ! Vas toucher de l'herbe !", fontSize), screenHeight/2  + screenHeight/10};
         DrawText("Mais t'es un malade toi ! Vas toucher de l'herbe !", textPlacement.x, textPlacement.y, fontSize*2, WHITE);
     }
