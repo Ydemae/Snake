@@ -5,7 +5,7 @@
 #include "include/raylib.h"
 
 //Définition des constantes statiques
-static const int MAXSNAKELENGTH = 500;
+static const int MAXSNAKELENGTH = 15;
 static const int SQUARESIZE = 40;
 
 class Snake{
@@ -101,25 +101,25 @@ static bool gameOver = false;
 static bool gamePaused = false;
 static int InputBuffer = -1;
 static int ACTUALSIZE = 1;
-static Font fonts[10] = {};
 static int next = -1;
 static bool gameWin = false;
+static int fontSize = 0;
 
 int main(){
     InitWindow(0, 0, "Game");
 
     //Loading textures (doit être load après l'initialisation de la fenêtre)
-    fonts[0] = LoadFont("resources/fonts/setback.png");
 
     int screenHeight = GetScreenHeight();
     int screenWidth = GetScreenWidth();
+
+    fontSize = screenWidth / 100;
 
     initGame(screenHeight, screenWidth);
     SetTargetFPS(60);
     while (!WindowShouldClose()){
         update(screenHeight, screenWidth);
     }
-    unloadGame();
     CloseWindow();
 }
 
@@ -464,37 +464,34 @@ void drawGame(int screenHeight, int screenWidth){
         for (int i = 0; i < ACTUALSIZE; i++){
             DrawRectangleV(snake[i].getPosition(), snake[i].getSize(), snake[i].getColor());
         }
-        DrawTextEx(fonts[0], TextFormat("Score : %d", ACTUALSIZE), (Vector2){0+SQUARESIZE,0 +SQUARESIZE} , 35, 5, WHITE);
+        DrawText(TextFormat("Score : %d", ACTUALSIZE),0+SQUARESIZE,0 +SQUARESIZE , fontSize*2, WHITE);
         DrawRectangleV(fruit.getPosition(), fruit.getSize(), fruit.getColor());
         if (gamePaused){
             DrawRectangleV((Vector2){0,0}, (Vector2){screenWidth, screenHeight}, ColorFromNormalized((Vector4){0,0,0,0.5}));
-            Vector2 textPlacement = (Vector2){screenWidth/2 - MeasureTextEx(fonts[0], "Game Paused", 40, 5).x, screenHeight/2 - MeasureTextEx(fonts[0], "Game Paused", 40, 5).y};
-            DrawTextEx(fonts[0], "Game Paused", textPlacement, 80, 5, WHITE);
+            Vector2 textPlacement = (Vector2){screenWidth/2 - MeasureText("Game Paused", fontSize*2), screenHeight/2 - screenHeight/15};
+            DrawText("Game Paused", textPlacement.x, textPlacement.y, fontSize*4, WHITE);
+            textPlacement = (Vector2){screenWidth/2 - MeasureText("Press [ SPACE ] to unpause", fontSize), screenHeight/2};
+            DrawText("Press [ SPACE ] to unpause", textPlacement.x, textPlacement.y, fontSize*2, WHITE);
         }
     }
     else{
         DrawRectangleV((Vector2){0,0}, (Vector2){screenWidth, screenHeight}, ColorFromNormalized((Vector4){0,0,0,0.5}));
-        Vector2 textPlacement = (Vector2){screenWidth/2 - MeasureTextEx(fonts[0], "Game Over", 40, 5).x, screenHeight/2 - MeasureTextEx(fonts[0], "Game Over", 80, 5).y};
-        DrawTextEx(fonts[0], "Game Over", textPlacement, 80, 5, WHITE);
-        textPlacement = (Vector2){screenWidth/2 - MeasureTextEx(fonts[0], "Press [ E ] to play again", 40, 5).x, screenHeight/2 + MeasureTextEx(fonts[0], "Press [ E ] to play again", 80, 5).y};
-        DrawTextEx(fonts[0], "Press [ E ] to play again", textPlacement, 80, 5, WHITE);
+        Vector2 textPlacement = (Vector2){screenWidth/2 - MeasureText( "Game Over", fontSize*2), screenHeight/2 - screenHeight/15};
+        DrawText( "Game Over", textPlacement.x, textPlacement.y, fontSize*4, WHITE);
+        textPlacement = (Vector2){screenWidth/2 - MeasureText( "Press [ E ] to play again", fontSize), screenHeight/2};
+        DrawText("Press [ E ] to play again", textPlacement.x, textPlacement.y, fontSize*2, WHITE);
     }
     if (gameWin){
         DrawRectangleV((Vector2){0,0}, (Vector2){screenWidth, screenHeight}, ColorFromNormalized((Vector4){0,0,0,0.5}));
-        Vector2 textPlacement = (Vector2){screenWidth/2 - MeasureTextEx(fonts[0], "Game Won", 40, 5).x, screenHeight/2 - MeasureTextEx(fonts[0], "Game Over", 80, 5).y - screenHeight/8};
-        DrawTextEx(fonts[0], "Game Won", textPlacement, 80, 5, WHITE);
-        textPlacement = (Vector2){screenWidth/2 - MeasureTextEx(fonts[0], "Press [ E ] to play again", 40, 5).x, screenHeight/2 + MeasureTextEx(fonts[0], "Press [ E ] to play again", 80, 5).y - screenHeight/8};
-        DrawTextEx(fonts[0], "Press [ E ] to play again", textPlacement, 80, 5, WHITE);
-        textPlacement = (Vector2){screenWidth/2 - MeasureTextEx(fonts[0], "T'as vraiment joué à snake jusqu'à finir ce snake ?", 40, 5).x, screenHeight/2 + MeasureTextEx(fonts[0], "T'as vraiment joué à snake jusqu'à finir ce snake ?", 80, 5).y};
-        DrawTextEx(fonts[0], "T'as vraiment joué à snake jusqu'à finir ce snake ?", textPlacement, 80, 5, WHITE);
-        textPlacement = (Vector2){screenWidth/2 - MeasureTextEx(fonts[0], "Mais t'es un malade toi ! Vas toucher de l'herbe !", 40, 5).x, screenHeight/2 + MeasureTextEx(fonts[0], "Mais t'es un malade toi ! Vas toucher de l'herbe !", 80, 5).y + screenHeight/8};
-        DrawTextEx(fonts[0], "Mais t'es un malade toi ! Vas toucher de l'herbe !", textPlacement, 80, 5, WHITE);
-        //Mais t'es un malade toi ! Vas toucher de l'herbe !
+        Vector2 textPlacement = (Vector2){screenWidth/2 - MeasureText("Game Won", fontSize*2), screenHeight/2 - screenHeight/10};
+        DrawText("Game Won", textPlacement.x, textPlacement.y, fontSize*4, WHITE);
+        textPlacement = (Vector2){screenWidth/2 - MeasureText("Press [ E ] to play again", fontSize), screenHeight/2 - screenHeight/50};
+        DrawText("Press [ E ] to play again", textPlacement.x, textPlacement.y, fontSize*2, WHITE);
+        textPlacement = (Vector2){screenWidth/2 - MeasureText("T'as vraiment joué à snake jusqu'à finir ce snake ?", fontSize), screenHeight/2 + screenHeight/25};
+        DrawText("T'as vraiment joué à snake jusqu'à finir ce snake ?", textPlacement.x, textPlacement.y, fontSize*2, WHITE);
+        textPlacement = (Vector2){screenWidth/2 - MeasureText("Mais t'es un malade toi ! Vas toucher de l'herbe !", fontSize), screenHeight/2  + screenHeight/10};
+        DrawText("Mais t'es un malade toi ! Vas toucher de l'herbe !", textPlacement.x, textPlacement.y, fontSize*2, WHITE);
     }
-    DrawTextEx(fonts[0], "Press [ ESC ] to quit", (Vector2){screenWidth - 2*SQUARESIZE - MeasureText("Press [ ESC ] to quit", 35), 0 + SQUARESIZE}, 35, 5, WHITE);
+    DrawText("Press [ ESC ] to quit", screenWidth - 2*SQUARESIZE - MeasureText("Press [ ESC ] to quit", fontSize*2), 0 + SQUARESIZE, fontSize*2, WHITE);
     EndDrawing();
-}
-
-void unloadGame(){
-    UnloadFont(fonts[0]);
 }
