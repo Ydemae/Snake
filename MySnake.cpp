@@ -4,6 +4,7 @@
 #include <time.h>
 #include "include/raylib.h"
 
+
 //Définition des constantes statiques
 static const int MAXSNAKELENGTH = 500;
 static const int SQUARESIZE = 40;
@@ -111,6 +112,8 @@ int main(){
 
     //Loading textures (doit être load après l'initialisation de la fenêtre)
 
+    srand( time(NULL));
+
     int screenHeight = GetScreenHeight();
     int screenWidth = GetScreenWidth();
 
@@ -137,7 +140,6 @@ int Ediv(int a, int b){
 }
 
 int RandomNumber(int l, int h){
-    srand( time(NULL));
 
     int RandId = rand() % (h-l) + l;
 
@@ -156,24 +158,6 @@ void initGame(int screenHeight, int screenWidth){
         fruitPosition = (Vector2){RandomNumber(2, Ediv(screenWidth, SQUARESIZE) - 2)*SQUARESIZE,RandomNumber(2, Ediv(screenHeight, SQUARESIZE)-2)*SQUARESIZE};
     }
     fruit = Fruit(fruitPosition,(Vector2){SQUARESIZE-1, SQUARESIZE-1}, (Color)ColorFromNormalized((Vector4){0.11, 1,1,1}));
-
-    //A retirer
-    for (int i = 0; i < 120; i++){
-        ACTUALSIZE++;
-        Snake oldSnake = snake[ACTUALSIZE-2];
-        if (oldSnake.getSpeed().x > 0){
-            snake[ACTUALSIZE-1] = Snake((Vector2){oldSnake.getPosition().x - SQUARESIZE, oldSnake.getPosition().y}, oldSnake.getSize(), oldSnake.getSpeed(), BLUE);
-            }
-        else if (oldSnake.getSpeed().x < 0){
-                snake[ACTUALSIZE-1] = Snake((Vector2){oldSnake.getPosition().x + SQUARESIZE, oldSnake.getPosition().y}, oldSnake.getSize(), oldSnake.getSpeed(), BLUE);
-            }
-        else if (oldSnake.getSpeed().y > 0){
-            snake[ACTUALSIZE-1] = Snake((Vector2){oldSnake.getPosition().x, oldSnake.getPosition().y - SQUARESIZE}, oldSnake.getSize(), oldSnake.getSpeed(), BLUE);
-            }
-        else if (oldSnake.getSpeed().y < 0){
-            snake[ACTUALSIZE-1] = Snake((Vector2){oldSnake.getPosition().x, oldSnake.getPosition().y + SQUARESIZE}, oldSnake.getSize(), oldSnake.getSpeed(), BLUE); 
-        }
-    }
     
 }
 
