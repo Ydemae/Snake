@@ -260,6 +260,7 @@ void updateGame(int screenHeight, int screenWidth){
                     Vector2 fruitposition = (Vector2){RandomNumber(2, Ediv(screenWidth, SQUARESIZE) - 2)*SQUARESIZE,RandomNumber(2, Ediv(screenHeight, SQUARESIZE)-2)*SQUARESIZE};
                     bool canSpawnFruit = true;
                     do{
+                        canSpawnFruit = true;
                         fruitposition = (Vector2){RandomNumber(2, Ediv(screenWidth, SQUARESIZE) - 2)*SQUARESIZE,RandomNumber(2, Ediv(screenHeight, SQUARESIZE)-2)*SQUARESIZE};
                         for (int i = 0; i < ACTUALSIZE; i++){
                             if (snake[i].getPosition().x == fruitposition.x && snake[i].getPosition().y == fruitposition.y){
