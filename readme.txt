@@ -8,4 +8,6 @@ This project was done thanks to raylib so if you want to give it a try, take a l
 The command to compile the game is :
 g++ MySnake.cpp -o MySnake.exe -Wall -mwindows -std=c++20 -Wno-missing-braces -I include/ -L Lib/ -lraylib -lopengl32 -lgdi32 -lwinmm
 
-Make sure you have raylib, opengl, lgdi and winmm installed for compiling, you can also just download the .exe if you want
+Make sure you have raylib, opengl, lgdi and winmm installed for compiling, you can also just download the .exe if you want.
+
+Anyway I wish you a good day, bye.
